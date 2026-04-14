@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, ListTree, Database } from "lucide-react";
-import { extractKnowledge, StructuredKnowledge } from "@/services/aiService";
+import { BackendService } from "@/services/backendService";
+import { StructuredKnowledge } from "@/services/aiService";
 import NoteUploader from "@/components/NoteUploader";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,7 +15,7 @@ export default function KnowledgeEngine() {
   const handleExtract = async (notes: string) => {
     setLoading(true);
     try {
-      const result = await extractKnowledge(notes);
+      const result = await BackendService.extractKnowledge(notes);
       setKnowledge(result);
     } catch (error) {
       console.error(error);

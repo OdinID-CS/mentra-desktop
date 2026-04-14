@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Trash2, Plus, Layers } from "lucide-react";
-import { generateFlashcards, Flashcard } from "@/services/aiService";
+import { BackendService } from "@/services/backendService";
+import { Flashcard } from "@/services/aiService";
 import NoteUploader from "@/components/NoteUploader";
 import FlashcardItem from "@/components/FlashcardItem";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +16,7 @@ export default function Flashcards() {
   const handleGenerate = async (notes: string) => {
     setLoading(true);
     try {
-      const newCards = await generateFlashcards(notes);
+      const newCards = await BackendService.generateFlashcards(notes);
       setCards([...newCards, ...cards]);
     } catch (error) {
       console.error(error);

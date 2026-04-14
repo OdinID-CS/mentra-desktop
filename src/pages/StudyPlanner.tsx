@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2, Calendar, CheckCircle2, Clock, ListTodo } from "lucide-react";
-import { generateStudyPlan, StudyPlan } from "@/services/aiService";
+import { BackendService } from "@/services/backendService";
+import { StudyPlan } from "@/services/aiService";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function StudyPlanner() {
@@ -17,7 +18,7 @@ export default function StudyPlanner() {
     if (!topic.trim()) return;
     setLoading(true);
     try {
-      const result = await generateStudyPlan(topic, timeframe);
+      const result = await BackendService.generateStudyPlan(topic, timeframe);
       setPlan(result);
     } catch (error) {
       console.error(error);

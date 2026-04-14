@@ -42,6 +42,51 @@ async function startServer() {
     }
   });
 
+  app.post('/api/ai/explain', async (req, res) => {
+    const { assignment } = req.body;
+    if (!assignment) {
+      return res.status(400).json({ error: "Assignment is required" });
+    }
+
+    try {
+      const prompt = `Explain this assignment step-by-step: ${assignment}`;
+      const explanation = await geminiService.generateText(prompt);
+      res.json({ explanation });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to explain assignment" });
+    }
+  });
+
+  app.post('/api/ai/knowledge', async (req, res) => {
+    const { notes } = req.body;
+    if (!notes) {
+      return res.status(400).json({ error: "Notes are required" });
+    }
+
+    try {
+      const prompt = `Convert these unstructured notes into a highly organized knowledge structure with summary, key concepts, and hierarchy: ${notes}`;
+      const knowledge = await geminiService.generateJSON(prompt);
+      res.json(knowledge);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to extract knowledge" });
+    }
+  });
+
+  app.post('/api/ai/planner', async (req, res) => {
+    const { topic, timeframe } = req.body;
+    if (!topic || !timeframe) {
+      return res.status(400).json({ error: "Topic and timeframe are required" });
+    }
+
+    try {
+      const prompt = `Create a detailed study plan for ${topic} over ${timeframe}. Return a JSON object with 'title' and 'phases' (each phase has 'name', 'tasks' array, and 'duration'): ${topic}`;
+      const plan = await geminiService.generateJSON(prompt);
+      res.json(plan);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate study plan" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

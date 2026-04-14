@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2, Sparkles, MessageSquare, Lightbulb, FileSearch } from "lucide-react";
-import { explainAssignment } from "@/services/aiService";
+import { BackendService } from "@/services/backendService";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,7 +17,7 @@ export default function AssignmentExplainer() {
     if (!assignment.trim()) return;
     setLoading(true);
     try {
-      const result = await explainAssignment(assignment);
+      const result = await BackendService.explainAssignment(assignment);
       setExplanation(result);
     } catch (error) {
       console.error(error);

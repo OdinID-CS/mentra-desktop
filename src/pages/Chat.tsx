@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 import { Send, User, Bot, Loader2, Trash2 } from "lucide-react";
-import { chat } from "@/services/aiService";
+import { BackendService } from "@/services/backendService";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
@@ -34,12 +34,7 @@ export default function Chat() {
     setLoading(true);
 
     try {
-      const history = messages.map((m) => ({
-        role: m.role,
-        parts: [{ text: m.text }],
-      }));
-      
-      const response = await chat(input, history);
+      const response = await BackendService.askAI(input);
       setMessages((prev) => [...prev, { role: "model", text: response }]);
     } catch (error) {
       console.error(error);
