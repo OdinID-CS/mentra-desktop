@@ -1,4 +1,4 @@
-import { BookOpen, LayoutDashboard, PenTool, Settings, Upload, Sparkles } from "lucide-react";
+import { BookOpen, LayoutDashboard, PenTool, Settings, Upload, Sparkles, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
     { id: "flashcards", label: "Flashcards", icon: BookOpen },
     { id: "planner", label: "Study Planner", icon: PenTool },
     { id: "assignments", label: "Assignment Explainer", icon: Sparkles },
+    { id: "chat", label: "Neural Link", icon: MessageSquare },
   ];
 
   return (

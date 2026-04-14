@@ -5,6 +5,7 @@ import Flashcards from "./pages/Flashcards";
 import StudyPlanner from "./pages/StudyPlanner";
 import AssignmentExplainer from "./pages/AssignmentExplainer";
 import Dashboard from "./pages/Dashboard";
+import Chat from "./pages/Chat";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function App() {
@@ -22,6 +23,8 @@ export default function App() {
         return <StudyPlanner />;
       case "assignments":
         return <AssignmentExplainer />;
+      case "chat":
+        return <Chat />;
       default:
         return <Dashboard />;
     }

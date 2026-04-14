@@ -194,3 +194,18 @@ export const explainAssignment = async (assignment: string): Promise<string> => 
     throw error;
   }
 };
+
+export const chat = async (message: string, history: { role: "user" | "model"; parts: { text: string }[] }[] = []): Promise<string> => {
+  try {
+    const chatSession = ai.chats.create({
+      model: "gemini-3.1-pro-preview",
+      history,
+    });
+
+    const result = await chatSession.sendMessage({ message });
+    return result.text;
+  } catch (error) {
+    console.error("Chat Error:", error);
+    throw error;
+  }
+};
