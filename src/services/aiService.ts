@@ -8,11 +8,21 @@ export interface Flashcard {
 }
 
 export const generateFlashcards = async (notes: string): Promise<Flashcard[]> => {
+  if (!notes || notes.trim().length < 10) {
+    throw new Error("Lecture notes are too short to generate meaningful flashcards.");
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `You are Mentra, a structured learning system. Convert the following notes into a set of high-quality flashcards.
-      Focus on key concepts, definitions, and relationships.
+      contents: `You are Mentra, a structured learning system. 
+      Convert the following lecture notes into clear, exam-style flashcards. 
+      
+      Requirements:
+      1. Focus on active recall and key concepts.
+      2. Keep answers concise (ideally one sentence or a short list).
+      3. Ensure questions are specific and unambiguous.
+      
       Return ONLY a JSON array of objects with 'question' and 'answer' fields.
       
       Notes:
@@ -33,9 +43,15 @@ export const generateFlashcards = async (notes: string): Promise<Flashcard[]> =>
       },
     });
 
-    return JSON.parse(response.text || "[]");
+    const text = response.text;
+    if (!text) throw new Error("AI failed to generate flashcard content.");
+    
+    return JSON.parse(text);
   } catch (error) {
     console.error("Error generating flashcards:", error);
+    if (error instanceof SyntaxError) {
+      throw new Error("Failed to parse AI response. Please try again.");
+    }
     throw error;
   }
 };
@@ -148,17 +164,27 @@ export const extractKnowledge = async (notes: string): Promise<StructuredKnowled
 };
 
 export const explainAssignment = async (assignment: string): Promise<string> => {
+  if (!assignment || assignment.trim().length < 5) {
+    throw new Error("Assignment prompt is too short to explain.");
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3.1-pro-preview",
-      contents: `You are Mentra, a structured learning system. Explain the following assignment step-by-step.
-      Do NOT be conversational. Provide a clear, structured breakdown of the requirements and a roadmap for completion.
-      Use Markdown for formatting.
+      contents: `You are Mentra, a structured learning system. Explain the following assignment.
+      
+      Requirements:
+      1. Provide a **Simple Explanation** of what the assignment is asking for (student-friendly tone).
+      2. Provide a **Step-by-Step Breakdown** of how to complete it.
+      3. Provide a **Concrete Example** if applicable to clarify the task.
+      
+      Do NOT use conversational filler (e.g., "Sure, I can help with that").
+      Use Markdown with clear headers for each section.
       
       Assignment:
       ${assignment}`,
       config: {
-        systemInstruction: "You are Mentra, a structured learning system. Your output is data-driven, logical, and educational. You avoid conversational filler.",
+        systemInstruction: "You are Mentra, a structured learning system. Your output is data-driven, logical, and student-friendly. You avoid conversational filler and focus on clarity and structure.",
       },
     });
 

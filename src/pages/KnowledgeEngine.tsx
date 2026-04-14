@@ -1,20 +1,17 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Sparkles, Database, ListTree, FileText } from "lucide-react";
+import { Sparkles, ListTree, Database } from "lucide-react";
 import { extractKnowledge, StructuredKnowledge } from "@/services/aiService";
+import NoteUploader from "@/components/NoteUploader";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function KnowledgeEngine() {
-  const [notes, setNotes] = useState("");
   const [knowledge, setKnowledge] = useState<StructuredKnowledge | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleExtract = async () => {
-    if (!notes.trim()) return;
+  const handleExtract = async (notes: string) => {
     setLoading(true);
     try {
       const result = await extractKnowledge(notes);
@@ -28,75 +25,75 @@ export default function KnowledgeEngine() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto h-full flex flex-col space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
-        <div className="flex flex-col space-y-4">
-          <Card className="bg-background border-border flex-1 flex flex-col rounded-lg overflow-hidden">
-            <CardHeader className="px-4 pt-4">
-              <div className="card-title-theme flex items-center gap-2">
-                <FileText className="w-3.5 h-3.5" />
-                Raw Lecture Notes
-              </div>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col gap-4 px-4 pb-4">
-              <Textarea
-                placeholder="Paste your unstructured lecture notes here..."
-                className="flex-1 bg-surface border-border focus:border-accent transition-colors resize-none text-xs font-mono leading-relaxed"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
-              <Button 
-                onClick={handleExtract} 
-                disabled={loading || !notes.trim()}
-                className="w-full bg-accent hover:bg-accent/90 text-white gap-2 py-5 text-xs font-bold uppercase tracking-wider"
-              >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-                Extract Knowledge
-              </Button>
-            </CardContent>
-          </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 overflow-hidden">
+        <div className="flex flex-col space-y-6">
+          <div className="space-y-1">
+            <h2 className="text-xl font-bold tracking-tight">Knowledge Engine</h2>
+            <p className="text-xs text-text-secondary">Convert unstructured notes into a structured knowledge base.</p>
+          </div>
+
+          <NoteUploader 
+            onUpload={handleExtract} 
+            isLoading={loading} 
+            buttonText="Extract Knowledge" 
+          />
         </div>
 
         <div className="flex flex-col overflow-hidden">
-          <Card className="bg-background border-border flex-1 flex flex-col overflow-hidden rounded-lg">
-            <CardHeader className="px-4 pt-4 border-b border-border">
-              <div className="card-title-theme flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-accent" />
-                Structured Knowledge Base
+          <Card className="bg-background border-border flex-1 flex flex-col overflow-hidden rounded-2xl shadow-sm">
+            <CardHeader className="px-6 pt-6 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-accent/10 rounded-lg text-accent">
+                  <Database className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-text-primary">Knowledge Base</span>
+                  <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold">Structured Output</p>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="p-0 flex-1 overflow-hidden bg-surface/30">
+            <CardContent className="p-0 flex-1 overflow-hidden bg-surface/10">
               <ScrollArea className="h-full">
-                <div className="p-6 space-y-8">
+                <div className="p-8 space-y-10">
                   <AnimatePresence mode="wait">
                     {knowledge ? (
                       <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-8"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="space-y-10"
                       >
-                        <section>
-                          <h4 className="text-[10px] font-bold uppercase tracking-widest text-accent mb-3">Executive Summary</h4>
-                          <p className="text-sm text-text-secondary leading-relaxed">{knowledge.summary}</p>
+                        <section className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-accent">Executive Summary</h4>
+                          </div>
+                          <p className="text-sm text-text-secondary leading-relaxed pl-3.5">{knowledge.summary}</p>
                         </section>
 
-                        <section>
-                          <h4 className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-3">Key Concepts</h4>
-                          <div className="grid grid-cols-1 gap-2">
+                        <section className="space-y-4">
+                          <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Key Concepts</h4>
+                          </div>
+                          <div className="grid grid-cols-1 gap-3 pl-3.5">
                             {knowledge.keyConcepts.map((concept, i) => (
-                              <div key={i} className="p-3 bg-background border border-border rounded-lg">
+                              <div key={i} className="p-4 bg-background border border-border rounded-xl hover:border-accent/20 transition-colors">
                                 <span className="text-xs font-bold text-text-primary block mb-1">{concept.term}</span>
-                                <p className="text-[11px] text-text-secondary">{concept.definition}</p>
+                                <p className="text-[11px] text-text-secondary leading-relaxed">{concept.definition}</p>
                               </div>
                             ))}
                           </div>
                         </section>
 
-                        <section>
-                          <h4 className="text-[10px] font-bold uppercase tracking-widest text-amber-500 mb-3">Logical Hierarchy</h4>
-                          <div className="space-y-3">
+                        <section className="space-y-4">
+                          <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                            <h4 className="text-[10px] font-bold uppercase tracking-widest text-amber-500">Logical Hierarchy</h4>
+                          </div>
+                          <div className="space-y-4 pl-3.5">
                             {knowledge.hierarchy.map((item, i) => (
-                              <div key={i} className="flex gap-3">
-                                <Badge variant="outline" className="h-fit text-[9px] font-mono border-border text-text-secondary shrink-0">
+                              <div key={i} className="flex gap-4">
+                                <Badge variant="outline" className="h-fit text-[9px] font-mono border-border text-text-secondary shrink-0 py-0.5 px-2">
                                   {item.level}
                                 </Badge>
                                 <p className="text-xs text-text-primary leading-relaxed">{item.content}</p>
@@ -106,9 +103,9 @@ export default function KnowledgeEngine() {
                         </section>
                       </motion.div>
                     ) : (
-                      <div className="h-64 flex flex-col items-center justify-center text-text-secondary text-center px-10">
-                        <ListTree className="w-12 h-12 mb-4 opacity-10" />
-                        <p className="text-xs font-mono">Input notes to build your structured knowledge base.</p>
+                      <div className="h-96 flex flex-col items-center justify-center text-text-secondary text-center px-10">
+                        <ListTree className="w-16 h-16 mb-6 opacity-10" />
+                        <p className="text-xs font-mono max-w-[200px] leading-relaxed">Input notes to build your structured knowledge base.</p>
                       </div>
                     )}
                   </AnimatePresence>
@@ -121,3 +118,4 @@ export default function KnowledgeEngine() {
     </div>
   );
 }
+
