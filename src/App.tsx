@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import Dashboard from "./pages/Dashboard";
+import UploadNotes from "./pages/UploadNotes";
 import Flashcards from "./pages/Flashcards";
-import Assignments from "./pages/Assignments";
+import AskAI from "./pages/AskAI";
+import Dashboard from "./pages/Dashboard";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function App() {
@@ -12,10 +13,12 @@ export default function App() {
     switch (activeTab) {
       case "dashboard":
         return <Dashboard />;
+      case "upload":
+        return <UploadNotes />;
       case "flashcards":
         return <Flashcards />;
-      case "assignments":
-        return <Assignments />;
+      case "ask-ai":
+        return <AskAI />;
       default:
         return <Dashboard />;
     }

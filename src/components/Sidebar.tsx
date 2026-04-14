@@ -1,4 +1,4 @@
-import { BookOpen, LayoutDashboard, PenTool, Settings } from "lucide-react";
+import { BookOpen, LayoutDashboard, PenTool, Settings, Upload, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -9,35 +9,31 @@ interface SidebarProps {
 export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "upload", label: "Upload Notes", icon: Upload },
     { id: "flashcards", label: "Flashcards", icon: BookOpen },
-    { id: "assignments", label: "Assignments", icon: PenTool },
+    { id: "ask-ai", label: "Ask AI", icon: Sparkles },
   ];
 
   return (
     <div className="w-[280px] bg-background text-text-primary h-full flex flex-col border-r border-border shrink-0">
-      <div className="p-5">
-        <div className="card border-accent/30 p-4 bg-background rounded-lg">
-          <div className="card-title-theme">System Health</div>
-          <div className="text-[11px] flex justify-between mb-1">
-            <span className="text-text-secondary">Payload Size</span>
-            <span className="text-emerald-500 font-mono">12.4 MB</span>
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center shadow-lg shadow-accent/20">
+            <BookOpen className="w-6 h-6 text-white" />
           </div>
-          <div className="text-[11px] flex justify-between">
-            <span className="text-text-secondary">IPC Latency</span>
-            <span className="text-emerald-500 font-mono">0.2ms</span>
-          </div>
+          <h1 className="text-xl font-bold tracking-tight">Lumina</h1>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-4 space-y-1.5">
         {menuItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={cn(
-              "w-full flex items-center gap-3 px-4 py-2 rounded transition-all duration-150 text-sm font-medium",
+              "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium",
               activeTab === item.id
-                ? "bg-accent text-white"
+                ? "bg-accent text-white shadow-md shadow-accent/10"
                 : "text-text-secondary hover:bg-surface hover:text-text-primary"
             )}
           >
@@ -48,10 +44,15 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       </nav>
 
       <div className="p-4 border-t border-border">
-        <button className="w-full flex items-center gap-3 px-4 py-2 rounded text-text-secondary hover:bg-surface hover:text-text-primary transition-all text-sm font-medium">
-          <Settings className="w-4 h-4" />
-          <span>Settings</span>
-        </button>
+        <div className="p-4 bg-surface rounded-xl border border-border">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">Storage</span>
+            <span className="text-[10px] font-mono text-accent">72%</span>
+          </div>
+          <div className="h-1.5 w-full bg-background rounded-full overflow-hidden">
+            <div className="h-full bg-accent w-[72%]" />
+          </div>
+        </div>
       </div>
     </div>
   );
