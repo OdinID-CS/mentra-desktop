@@ -3,6 +3,8 @@ import cors from 'cors';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 
+import geminiService from './geminiService';
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -11,10 +13,33 @@ async function startServer() {
   app.use(express.json());
 
   // API Routes
+  app.post('/api/ai/ask', async (req, res) => {
+    const { prompt } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required" });
+    }
+
+    try {
+      const response = await geminiService.generateText(prompt);
+      res.json({ response });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : "AI Generation failed" });
+    }
+  });
+
   app.post('/api/ai/flashcards', async (req, res) => {
-    // This will be handled by the frontend calling Gemini directly
-    // but we keep the structure for "Node.js backend" requirement
-    res.json({ message: "Backend endpoint ready" });
+    const { notes } = req.body;
+    if (!notes) {
+      return res.status(400).json({ error: "Notes are required" });
+    }
+
+    try {
+      const prompt = `Convert these notes into a JSON array of flashcards with 'question' and 'answer' fields: ${notes}`;
+      const cards = await geminiService.generateJSON(prompt);
+      res.json(cards);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate flashcards" });
+    }
   });
 
   // Vite middleware for development

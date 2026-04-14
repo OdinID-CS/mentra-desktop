@@ -9,9 +9,10 @@ interface SidebarProps {
 export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "upload", label: "Upload Notes", icon: Upload },
+    { id: "knowledge", label: "Knowledge Engine", icon: Upload },
     { id: "flashcards", label: "Flashcards", icon: BookOpen },
-    { id: "ask-ai", label: "Ask AI", icon: Sparkles },
+    { id: "planner", label: "Study Planner", icon: PenTool },
+    { id: "assignments", label: "Assignment Explainer", icon: Sparkles },
   ];
 
   return (
@@ -21,7 +22,7 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center shadow-lg shadow-accent/20">
             <BookOpen className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight">Lumina</h1>
+          <h1 className="text-xl font-bold tracking-tight">Mentra</h1>
         </div>
       </div>
 

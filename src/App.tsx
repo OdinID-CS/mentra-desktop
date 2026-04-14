@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import UploadNotes from "./pages/UploadNotes";
+import KnowledgeEngine from "./pages/KnowledgeEngine";
 import Flashcards from "./pages/Flashcards";
-import AskAI from "./pages/AskAI";
+import StudyPlanner from "./pages/StudyPlanner";
+import AssignmentExplainer from "./pages/AssignmentExplainer";
 import Dashboard from "./pages/Dashboard";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,12 +14,14 @@ export default function App() {
     switch (activeTab) {
       case "dashboard":
         return <Dashboard />;
-      case "upload":
-        return <UploadNotes />;
+      case "knowledge":
+        return <KnowledgeEngine />;
       case "flashcards":
         return <Flashcards />;
-      case "ask-ai":
-        return <AskAI />;
+      case "planner":
+        return <StudyPlanner />;
+      case "assignments":
+        return <AssignmentExplainer />;
       default:
         return <Dashboard />;
     }
@@ -28,7 +31,7 @@ export default function App() {
     <div className="flex flex-col h-screen bg-background text-text-primary overflow-hidden">
       <header className="h-[60px] border-b border-border flex items-center justify-between px-6 bg-surface shrink-0">
         <div className="flex items-center gap-3">
-          <strong className="text-lg tracking-tight">LuminaOS</strong>
+          <strong className="text-lg tracking-tight">MentraOS</strong>
           <span className="badge-theme">v1.0.4</span>
         </div>
         <div className="text-[12px] text-text-secondary font-mono">

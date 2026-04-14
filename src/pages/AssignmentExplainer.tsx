@@ -1,13 +1,14 @@
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Sparkles, MessageSquare, Lightbulb } from "lucide-react";
+import { Loader2, Sparkles, MessageSquare, Lightbulb, FileSearch } from "lucide-react";
 import { explainAssignment } from "@/services/aiService";
 import ReactMarkdown from "react-markdown";
+import { motion, AnimatePresence } from "framer-motion";
 
-export default function Assignments() {
+export default function AssignmentExplainer() {
   const [assignment, setAssignment] = useState("");
   const [explanation, setExplanation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,19 +27,19 @@ export default function Assignments() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto h-full flex flex-col space-y-6">
+    <div className="p-6 max-w-6xl mx-auto h-full flex flex-col space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
-        <div className="space-y-4 flex flex-col">
-          <Card className="bg-background border-border flex-1 flex flex-col rounded-lg">
+        <div className="flex flex-col space-y-4">
+          <Card className="bg-background border-border flex-1 flex flex-col rounded-lg overflow-hidden">
             <CardHeader className="px-4 pt-4">
               <div className="card-title-theme flex items-center gap-2">
-                <MessageSquare className="w-3.5 h-3.5" />
-                Assignment Prompt
+                <FileSearch className="w-3.5 h-3.5" />
+                Assignment Prompt / Instructions
               </div>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col gap-4 px-4 pb-4">
               <Textarea
-                placeholder="Paste the assignment instructions or prompt here..."
+                placeholder="Paste the assignment requirements or prompt here..."
                 className="flex-1 bg-surface border-border focus:border-accent transition-colors resize-none text-xs font-mono leading-relaxed"
                 value={assignment}
                 onChange={(e) => setAssignment(e.target.value)}
@@ -49,7 +50,7 @@ export default function Assignments() {
                 className="w-full bg-accent hover:bg-accent/90 text-white gap-2 py-5 text-xs font-bold uppercase tracking-wider"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                Explain This
+                Break Down Assignment
               </Button>
             </CardContent>
           </Card>
@@ -57,23 +58,30 @@ export default function Assignments() {
 
         <div className="flex flex-col overflow-hidden">
           <Card className="bg-background border-border flex-1 flex flex-col overflow-hidden rounded-lg">
-            <CardHeader className="px-4 pt-4">
+            <CardHeader className="px-4 pt-4 border-b border-border">
               <div className="card-title-theme flex items-center gap-2">
                 <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-                AI Breakdown
+                Structured AI Breakdown
               </div>
             </CardHeader>
-            <CardContent className="p-0 flex-1 overflow-hidden">
+            <CardContent className="p-0 flex-1 overflow-hidden bg-surface/30">
               <ScrollArea className="h-full">
-                <div className="p-6 prose prose-invert max-w-none">
-                  {explanation ? (
-                    <ReactMarkdown>{explanation}</ReactMarkdown>
-                  ) : (
-                    <div className="h-64 flex flex-col items-center justify-center text-text-secondary text-center px-10">
-                      <Sparkles className="w-10 h-10 mb-4 opacity-10" />
-                      <p className="text-xs font-mono">Your explanation will appear here once you submit an assignment prompt.</p>
-                    </div>
-                  )}
+                <div className="p-8 prose prose-invert max-w-none">
+                  <AnimatePresence mode="wait">
+                    {explanation ? (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        <ReactMarkdown>{explanation}</ReactMarkdown>
+                      </motion.div>
+                    ) : (
+                      <div className="h-64 flex flex-col items-center justify-center text-text-secondary text-center px-10">
+                        <MessageSquare className="w-12 h-12 mb-4 opacity-10" />
+                        <p className="text-xs font-mono">Submit an assignment prompt to receive a structured step-by-step breakdown.</p>
+                      </div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </ScrollArea>
             </CardContent>
