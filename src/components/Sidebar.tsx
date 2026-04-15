@@ -1,5 +1,6 @@
 import { BookOpen, LayoutDashboard, PenTool, Upload, Sparkles, MessageSquare, Terminal, Cpu, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MentraBadge } from "./MentraUI";
 
 interface SidebarProps {
   activeTab: string;
@@ -18,56 +19,56 @@ export default function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarPr
   ];
 
   return (
-    <div className="w-[240px] bg-background text-text-primary h-full flex flex-col border-r border-border shrink-0">
-      <div className="p-6">
+    <div className="w-[260px] bg-surface text-text-primary h-full flex flex-col border-r border-border shrink-0">
+      <div className="p-8">
         <div className="flex items-center gap-3 mb-10">
-          <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-            <Cpu className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+            <Cpu className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-sm font-bold tracking-tight uppercase">Mentra OS</h1>
-            <span className="text-[8px] font-mono text-text-secondary uppercase tracking-[0.2em]">Neural Learning Engine</span>
+            <h1 className="text-base font-bold tracking-tight uppercase italic font-serif">Mentra OS</h1>
+            <span className="text-[9px] font-mono text-text-secondary uppercase tracking-[0.2em]">Neural Engine</span>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1">
-        <div className="px-3 mb-2">
-          <span className="mono-label opacity-50">Core Modules</span>
+      <nav className="flex-1 px-4 space-y-1.5">
+        <div className="px-4 mb-3">
+          <span className="mono-label opacity-40">Core Modules</span>
         </div>
         {menuItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={cn(
-              "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-[11px] font-bold uppercase tracking-wider",
+              "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-[11px] font-bold uppercase tracking-wider",
               activeTab === item.id
-                ? "bg-accent-muted text-accent border border-accent/20"
-                : "text-text-secondary hover:bg-surface hover:text-text-primary border border-transparent"
+                ? "bg-accent-blue/10 text-accent-blue border border-accent-blue/20 shadow-inner"
+                : "text-text-secondary hover:bg-white/[0.03] hover:text-text-primary border border-transparent"
             )}
           >
-            <item.icon className={cn("w-3.5 h-3.5", activeTab === item.id ? "text-accent" : "text-text-secondary")} />
+            <item.icon className={cn("w-4 h-4", activeTab === item.id ? "text-accent-blue" : "text-text-secondary")} />
             <span>{item.label}</span>
           </button>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-border space-y-4">
-        <div className="p-4 bg-surface/50 rounded-xl border border-border/50">
-          <div className="flex items-center justify-between mb-2">
+      <div className="p-6 border-t border-border space-y-6">
+        <div className="p-5 bg-background/50 rounded-2xl border border-border/50">
+          <div className="flex items-center justify-between mb-3">
             <span className="mono-label">Neural Sync</span>
-            <span className="text-[9px] font-mono text-accent">72%</span>
+            <MentraBadge variant="blue">72%</MentraBadge>
           </div>
-          <div className="h-1 w-full bg-background rounded-full overflow-hidden">
-            <div className="h-full bg-accent w-[72%] shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
+          <div className="h-1.5 w-full bg-background rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-accent-blue to-accent-purple w-[72%] shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
           </div>
         </div>
 
         <button 
           onClick={onLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[11px] font-bold uppercase tracking-wider text-text-secondary hover:text-red-400 hover:bg-red-400/5 transition-all"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-wider text-text-secondary hover:text-red-400 hover:bg-red-400/5 transition-all border border-transparent hover:border-red-400/20"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          <LogOut className="w-4 h-4" />
           <span>Terminate Link</span>
         </button>
       </div>

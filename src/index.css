@@ -16,13 +16,17 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   
-  --color-background: #09090B;
-  --color-surface: #121214;
-  --color-border: #1F1F22;
-  --color-text-primary: #FAFAFA;
-  --color-text-secondary: #71717A;
-  --color-accent: #6366F1;
-  --color-accent-muted: rgba(99, 102, 241, 0.1);
+  --color-background: #0B0F19;
+  --color-surface: #111827;
+  --color-surface-light: #1F2937;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #9CA3AF;
+  --color-accent-blue: #3B82F6;
+  --color-accent-purple: #8B5CF6;
+  
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
 }
 
 @layer base {
@@ -37,17 +41,26 @@
   }
 }
 
+/* Premium UI Components */
+.mentra-glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+.mentra-glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+
+.mentra-glass {
+  @apply bg-surface/60 backdrop-blur-xl border border-white/5;
+}
+
+.mentra-gradient-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-accent-blue to-accent-purple;
+}
+
 /* Technical UI Components */
 .card-title-theme {
   @apply text-[10px] font-bold uppercase tracking-[0.15em] text-text-secondary mb-4 flex items-center gap-2;
-}
-
-.badge-theme {
-  @apply font-mono text-[9px] bg-accent-muted text-accent border border-accent/20 px-1.5 py-0.5 rounded uppercase tracking-wider font-bold;
-}
-
-.glass-panel {
-  @apply bg-surface/50 backdrop-blur-md border border-white/5;
 }
 
 .mono-label {
