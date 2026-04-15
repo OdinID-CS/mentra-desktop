@@ -7,20 +7,33 @@ import AssignmentExplainer from "./pages/AssignmentExplainer";
 import Dashboard from "./pages/Dashboard";
 import Chat from "./pages/Chat";
 import Login from "./pages/Login";
+import LandingPage from "./pages/LandingPage";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [showLanding, setShowLanding] = useState(true);
 
   const handleLogin = (email?: string) => {
     setIsAuthenticated(true);
+    setShowLanding(false);
     if (email) {
       setUserEmail(email);
     } else {
       setUserEmail("Guest User");
     }
+  };
+
+  const handleGetStarted = () => {
+    setShowLanding(false);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setShowLanding(true);
+    setUserEmail(null);
   };
 
   const renderContent = () => {
@@ -43,6 +56,9 @@ export default function App() {
   };
 
   if (!isAuthenticated) {
+    if (showLanding) {
+      return <LandingPage onGetStarted={handleGetStarted} />;
+    }
     return <Login onLogin={handleLogin} />;
   }
 
@@ -64,7 +80,7 @@ export default function App() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={() => setIsAuthenticated(false)} />
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
         
         <main className="flex-1 overflow-y-auto bg-surface relative">
           <AnimatePresence mode="wait">
