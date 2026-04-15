@@ -1,134 +1,81 @@
+import * as aiService from "./aiService";
+import { supabase } from "@/lib/supabase";
+
 /**
  * BackendService handles communication with the local Node.js server.
+ * Now integrated with real AI services and Supabase.
  */
 export class BackendService {
-  private static baseUrl = "/api";
-  
-  /**
-   * Registers a new user.
-   */
-  static async register(email: string, password: string) {
-    const response = await fetch(`${this.baseUrl}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Registration failed");
-    }
-
-    return response.json();
+  private static sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
-   * Logs in a user.
+   * Registers a new user via Supabase.
    */
-  static async login(email: string, password: string) {
-    const response = await fetch(`${this.baseUrl}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+  static async register(email: string, password: string) {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Login failed");
-    }
+    if (error) throw new Error(error.message);
+    return data;
+  }
 
-    return response.json();
+  /**
+   * Logs in a user via Supabase.
+   */
+  static async login(email: string, password: string) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  /**
+   * Logs out the current user.
+   */
+  static async logout() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw new Error(error.message);
   }
 
   /**
    * Generates flashcards from notes via the backend.
    */
   static async generateFlashcards(notes: string) {
-    const response = await fetch(`${this.baseUrl}/ai/flashcards`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notes }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Failed to generate flashcards");
-    }
-
-    return response.json();
+    return await aiService.generateFlashcards(notes);
   }
 
   /**
    * Explains an assignment via the backend.
    */
   static async explainAssignment(assignment: string) {
-    const response = await fetch(`${this.baseUrl}/ai/explain`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ assignment }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Failed to explain assignment");
-    }
-
-    const data = await response.json();
-    return data.explanation;
+    return await aiService.explainAssignment(assignment);
   }
 
   /**
    * Extracts structured knowledge from notes via the backend.
    */
   static async extractKnowledge(notes: string) {
-    const response = await fetch(`${this.baseUrl}/ai/knowledge`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ notes }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Failed to extract knowledge");
-    }
-
-    return response.json();
+    return await aiService.extractKnowledge(notes);
   }
 
   /**
    * Generates a study plan via the backend.
    */
   static async generateStudyPlan(topic: string, timeframe: string) {
-    const response = await fetch(`${this.baseUrl}/ai/planner`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic, timeframe }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "Failed to generate study plan");
-    }
-
-    return response.json();
+    return await aiService.generateStudyPlan(topic, timeframe);
   }
 
   /**
    * General AI query via the backend.
    */
   static async askAI(prompt: string) {
-    const response = await fetch(`${this.baseUrl}/ai/ask`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || "AI query failed");
-    }
-
-    const data = await response.json();
-    return data.response;
+    return await aiService.chat(prompt);
   }
 }

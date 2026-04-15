@@ -26,7 +26,7 @@ export default function NoteUploader({ onUpload, isLoading, buttonText = "Proces
 
   const processFile = (file: File) => {
     if (file.type !== "text/plain") {
-      alert("Please upload a .txt file for now.");
+      console.error("Invalid file type. Please upload a .txt file.");
       return;
     }
     

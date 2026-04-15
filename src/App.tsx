@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import KnowledgeEngine from "./pages/KnowledgeEngine";
 import Flashcards from "./pages/Flashcards";
@@ -11,31 +11,41 @@ import LandingPage from "./pages/LandingPage";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cpu, UserCircle } from "lucide-react";
 import { MentraBadge } from "./components/MentraUI";
+import { supabase } from "./lib/supabase";
+import { BackendService } from "./services/backendService";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [showLanding, setShowLanding] = useState(true);
 
-  const handleLogin = (email?: string) => {
-    setIsAuthenticated(true);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) setShowLanding(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) setShowLanding(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogin = () => {
     setShowLanding(false);
-    if (email) {
-      setUserEmail(email);
-    } else {
-      setUserEmail("Guest User");
-    }
   };
 
   const handleGetStarted = () => {
     setShowLanding(false);
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
+  const handleLogout = async () => {
+    await BackendService.logout();
     setShowLanding(true);
-    setUserEmail(null);
   };
 
   const renderContent = () => {
@@ -57,7 +67,7 @@ export default function App() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!session) {
     if (showLanding) {
       return <LandingPage onGetStarted={handleGetStarted} />;
     }
@@ -82,7 +92,7 @@ export default function App() {
           <div className="w-px h-5 bg-border" />
           <div className="flex items-center gap-2">
             <UserCircle className="w-4 h-4" />
-            <span className="font-bold text-text-primary">{userEmail || "quincysolomon33"}</span>
+            <span className="font-bold text-text-primary">{session.user?.email}</span>
           </div>
         </div>
       </header>
