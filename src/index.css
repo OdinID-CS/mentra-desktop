@@ -14,14 +14,15 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   
-  --color-background: #0A0A0B;
-  --color-surface: #141416;
-  --color-border: #262629;
-  --color-text-primary: #E4E4E7;
-  --color-text-secondary: #A1A1AA;
+  --color-background: #09090B;
+  --color-surface: #121214;
+  --color-border: #1F1F22;
+  --color-text-primary: #FAFAFA;
+  --color-text-secondary: #71717A;
   --color-accent: #6366F1;
+  --color-accent-muted: rgba(99, 102, 241, 0.1);
 }
 
 @layer base {
@@ -32,22 +33,31 @@
     @apply bg-background text-text-primary;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
   }
 }
 
-/* High Density Component Styles */
+/* Technical UI Components */
 .card-title-theme {
-  @apply text-[12px] uppercase tracking-[0.05em] text-accent font-bold mb-3 pb-2 border-b border-border;
+  @apply text-[10px] font-bold uppercase tracking-[0.15em] text-text-secondary mb-4 flex items-center gap-2;
 }
 
 .badge-theme {
-  @apply font-mono text-[10px] bg-accent text-white px-1.5 py-0.5 rounded uppercase;
+  @apply font-mono text-[9px] bg-accent-muted text-accent border border-accent/20 px-1.5 py-0.5 rounded uppercase tracking-wider font-bold;
 }
 
-/* Custom Scrollbar */
+.glass-panel {
+  @apply bg-surface/50 backdrop-blur-md border border-white/5;
+}
+
+.mono-label {
+  @apply font-mono text-[10px] text-text-secondary uppercase tracking-widest;
+}
+
+/* Custom Scrollbar - Minimal Hardware Feel */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -67,15 +77,32 @@
 }
 
 .prose h1, .prose h2, .prose h3 {
-  @apply text-text-primary font-bold tracking-tight mt-4 mb-2;
+  @apply text-text-primary font-bold tracking-tight mt-6 mb-3;
 }
 
 .prose strong {
   @apply text-accent font-semibold;
 }
+
+.markdown-body {
+  @apply text-sm leading-relaxed text-text-secondary;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  @apply text-text-primary font-bold tracking-tight mt-6 mb-3;
+}
+
+.markdown-body ul {
+  @apply list-disc pl-5 space-y-2 my-4;
+}
+
+.markdown-body code {
+  @apply bg-surface px-1.5 py-0.5 rounded font-mono text-xs text-accent border border-accent/10;
+}
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
