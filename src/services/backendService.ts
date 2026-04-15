@@ -3,6 +3,42 @@
  */
 export class BackendService {
   private static baseUrl = "/api";
+  
+  /**
+   * Registers a new user.
+   */
+  static async register(email: string, password: string) {
+    const response = await fetch(`${this.baseUrl}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Registration failed");
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Logs in a user.
+   */
+  static async login(email: string, password: string) {
+    const response = await fetch(`${this.baseUrl}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Login failed");
+    }
+
+    return response.json();
+  }
 
   /**
    * Generates flashcards from notes via the backend.

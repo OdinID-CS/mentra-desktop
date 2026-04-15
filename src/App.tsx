@@ -12,11 +12,14 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
-  const handleLogin = (guest = false) => {
+  const handleLogin = (email?: string) => {
     setIsAuthenticated(true);
-    if (guest) {
-      console.log("Logged in as guest");
+    if (email) {
+      setUserEmail(email);
+    } else {
+      setUserEmail("Guest User");
     }
   };
 
@@ -56,7 +59,7 @@ export default function App() {
             Neural Link Active
           </div>
           <div className="w-px h-4 bg-border" />
-          User: quincysolomon33
+          User: {userEmail || "quincysolomon33"}
         </div>
       </header>
 

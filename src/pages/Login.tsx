@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Cpu, Mail, Lock, ArrowRight, UserCircle, ShieldCheck, Terminal } from "lucide-react";
+import { Cpu, Mail, Lock, ArrowRight, UserCircle, ShieldCheck, Terminal, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BackendService } from "@/services/backendService";
 
 interface LoginProps {
-  onLogin: (guest?: boolean) => void;
+  onLogin: (email?: string) => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
@@ -15,15 +16,28 @@ export default function Login({ onLogin }: LoginProps) {
   const [password, setPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate network delay
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      if (isRegistering) {
+        await BackendService.register(email, password);
+        // Auto login after registration
+        const result = await BackendService.login(email, password);
+        onLogin(result.user.email);
+      } else {
+        const result = await BackendService.login(email, password);
+        onLogin(result.user.email);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Authentication failed");
+    } finally {
       setIsLoading(false);
-      onLogin();
-    }, 1500);
+    }
   };
 
   return (
@@ -61,6 +75,20 @@ export default function Login({ onLogin }: LoginProps) {
           
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-500 text-[10px] font-mono uppercase tracking-wider"
+                  >
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="mono-label ml-1">Access Identity</label>
@@ -144,7 +172,7 @@ export default function Login({ onLogin }: LoginProps) {
                 <Button 
                   type="button"
                   variant="outline"
-                  onClick={() => onLogin(true)}
+                  onClick={() => onLogin()}
                   className="h-11 border-border bg-background/30 hover:bg-surface rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center gap-2"
                 >
                   <UserCircle className="w-3.5 h-3.5" />

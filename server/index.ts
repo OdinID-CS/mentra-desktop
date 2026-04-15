@@ -4,6 +4,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 
 import geminiService from './geminiService';
+import { authService } from './auth';
 
 async function startServer() {
   const app = express();
@@ -12,7 +13,28 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  // API Routes
+  // Auth Routes
+  app.post('/api/auth/register', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const user = await authService.register(email, password);
+      res.json({ success: true, user });
+    } catch (error) {
+      res.status(400).json({ error: error instanceof Error ? error.message : 'Registration failed' });
+    }
+  });
+
+  app.post('/api/auth/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const user = await authService.login(email, password);
+      res.json({ success: true, user });
+    } catch (error) {
+      res.status(401).json({ error: error instanceof Error ? error.message : 'Login failed' });
+    }
+  });
+
+  // AI Routes
   app.post('/api/ai/ask', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) {
